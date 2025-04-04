@@ -119,7 +119,6 @@ private fun SignInContent(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxHeight()
-            .padding(top = 40.dp)
             .background(color = Color.White)
     ) {
 //        Image(
@@ -129,15 +128,15 @@ private fun SignInContent(
 //                .size(230.dp)
 //        )
         Text(
-            text = "SmartTasks",
+            text = "Coffee App",
             fontWeight = FontWeight.Bold,
             fontSize = 35.sp,
             color = Color(0xFF2196F3),
-            modifier = Modifier.padding(top = 20.dp)
+            modifier = Modifier.padding(top = 200.dp)
         )
 
         Text(
-            text = "A simple and efficient to-do app",
+            text = "Coffee for you",
             color = Color(0xFF2196F3),
         )
         Column(
@@ -173,11 +172,11 @@ private fun SignInContent(
                     .padding(start = 30.dp, end = 30.dp)
             ) {
                 Row {
-//                    Image(
-//                        painter = painterResource(id = R.drawable.icon_google),
-//                        contentDescription = "Google Icon",
-//                        modifier = Modifier.size(20.dp)
-//                    )
+                    Image(
+                        painter = painterResource(id = R.drawable.icon_google),
+                        contentDescription = "Google Icon",
+                        modifier = Modifier.size(20.dp)
+                    )
                     Text(
                         text = " SIGN IN WITH GOOGLE",
                         fontSize = 20.sp,
@@ -199,54 +198,86 @@ private fun UserProfileContent(
         model = user?.photoUrl
     )
 
-    Box(
-        modifier = Modifier.fillMaxWidth()
+    Column(
+        modifier = Modifier.fillMaxSize(),
     ) {
-        Button(
-            onClick = { navController.navigate("profileScreen") },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.White,
-                contentColor = Color(0xFF42AFFF)
-            ),
-            modifier = Modifier
-                .align(Alignment.TopEnd)
+        Box(Modifier.fillMaxWidth().padding(bottom = 100.dp)) {
+            Button(
+                onClick = { navController.navigate("Profile") },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White,
+                    contentColor = Color(0xFF42AFFF)
+                ),
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+            ) {
+                Text(
+                    text = "Profile",
+                    fontSize = 25.sp
+                )
+            }
+
+            Button(
+                onClick = onSignOutClick,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White,
+                    contentColor = Color(0xFF42AFFF)
+                ),
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+            ) {
+                Text(
+                    text = "Sign Out",
+                    fontSize = 25.sp
+                )
+            }
+        }
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
         ) {
+            AsyncImage(
+                model = user?.photoUrl,
+                contentDescription = "Profile Picture",
+                placeholder = profilePainter,
+                fallback = profilePainter,
+                modifier = Modifier
+                    .size(250.dp)
+                    .clip(CircleShape)
+            )
+
             Text(
-                text = "Profile",
-                fontSize = 20.sp
+                text = "Welcome, ${user?.displayName ?: "User"}",
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.padding(top = 16.dp)
+            )
+
+            Text(
+                text = user?.email ?: "",
+                fontSize = 20.sp,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(bottom = 16.dp)
             )
         }
-    }
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier.padding(top = 150.dp)
-    ) {
-        AsyncImage(
-            model = user?.photoUrl,
-            contentDescription = "Profile Picture",
-            placeholder = profilePainter,
-            fallback = profilePainter,
-            modifier = Modifier
-                .size(100.dp)
-                .clip(CircleShape)
-        )
-
-        Text(
-            text = "Welcome, ${user?.displayName ?: "User"}",
-            style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(top = 16.dp)
-        )
-
-        Text(
-            text = user?.email ?: "",
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
-        Button(onClick = onSignOutClick) {
-            Text("Sign Out")
+        Box(Modifier.fillMaxSize()){
+            Button(
+                onClick = {navController.navigate("Splash")},
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF42AFFF),
+                    contentColor = Color.White
+                ),
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .height(50.dp)
+                    .width(350.dp)
+                    .padding(start = 15.dp, end = 15.dp)
+            ) {
+                Text(
+                    text = "Get Started",
+                    fontSize = 25.sp,
+                )
+            }
         }
     }
 }
