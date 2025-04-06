@@ -18,13 +18,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.coffeeapp.R
+import kotlinx.coroutines.delay
 
 
 @Composable
 fun SplashScreen(navController: NavHostController){
     LaunchedEffect(Unit) {
         delay(3000)
-        navController.navigate("first") {
+        navController.navigate("Menu") {
             popUpTo("splash") { inclusive = true }
         }
     }
