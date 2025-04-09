@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.coffeeapp.ui.screens.DrinkListScreen
 import com.example.coffeeapp.ui.screens.LoginScreen
 import com.example.coffeeapp.ui.screens.MenuScreen
 import com.example.coffeeapp.ui.screens.ProfileScreen

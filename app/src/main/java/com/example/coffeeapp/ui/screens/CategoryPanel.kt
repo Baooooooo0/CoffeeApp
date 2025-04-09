@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,8 +31,6 @@ import androidx.compose.ui.res.painterResource
 import com.example.coffeeapp.R
 import com.example.coffeeapp.model.CategoryItemData
 
-
-
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun CategoryPanel() {
@@ -53,7 +52,7 @@ fun CategoryPanel() {
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(cornerRadius))
-            .background(Color.White.copy(alpha = 0.1f)) // simulate blur
+            .background(Color.White.copy(alpha = 0.1f))
             .border(1.dp, Color.White.copy(alpha = 0.2f), RoundedCornerShape(cornerRadius))
             .padding(16.dp)
     ) {
@@ -61,7 +60,7 @@ fun CategoryPanel() {
             Text(
                 text = "Select Category",
                 color = Color.White,
-                fontSize = 18.sp,
+                fontSize = 28.sp,
                 fontWeight = FontWeight.Bold
             )
 
@@ -79,7 +78,8 @@ fun CategoryPanel() {
                             CategoryItem(
                                 iconResId = item.iconResId,
                                 label = item.label,
-                                iconSize = iconSize
+                                iconSize = iconSize,
+                                onClick = {} // navigate
                             )
                         }
                     }
@@ -94,14 +94,16 @@ fun CategoryPanel() {
 fun CategoryItem(
     iconResId: Int,
     label: String,
-    iconSize: Dp
+    iconSize: Dp,
+    onClick: () -> Unit
 ) {
     val painter = painterResource(id = iconResId)
 
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(16.dp))
-            .background(Color.White.copy(alpha = 0.05f)) // Light inner background
+            .background(Color.White.copy(alpha = 0.05f))
+            .clickable { onClick() }
             .padding(8.dp)
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {

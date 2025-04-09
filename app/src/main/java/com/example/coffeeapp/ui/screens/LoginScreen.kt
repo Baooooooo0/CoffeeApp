@@ -121,12 +121,6 @@ private fun SignInContent(
             .fillMaxHeight()
             .background(color = Color.White)
     ) {
-//        Image(
-//            painter = painterResource(id = R.drawable.login_image),
-//            contentDescription = "LoginImage",
-//            modifier = Modifier
-//                .size(230.dp)
-//        )
         Text(
             text = "Coffee App",
             fontWeight = FontWeight.Bold,
