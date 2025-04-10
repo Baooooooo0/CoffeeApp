@@ -46,7 +46,7 @@ class AuthViewModel : ViewModel() {
                 val googleIdOption = GetGoogleIdOption.Builder()
                     .setServerClientId(context.getString(com.example.coffeeapp.R.string.default_web_client_id))
                     .setFilterByAuthorizedAccounts(false)
-                    .setAutoSelectEnabled(false)
+                    .setAutoSelectEnabled(true) // need testing
                     .build()
 
                 val request = GetCredentialRequest.Builder()
