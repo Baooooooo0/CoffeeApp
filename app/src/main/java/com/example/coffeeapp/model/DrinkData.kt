@@ -6,6 +6,5 @@ data class DrinkData(
     val description: String = "",
     val extra: String = "",
     val price: Double = 0.0,
-    val picUrl: List<String>? = null
+    val picUrl: List<String> = emptyList() // ← Chỉnh sửa chỗ này
 )
-

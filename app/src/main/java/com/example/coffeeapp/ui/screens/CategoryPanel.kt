@@ -19,34 +19,34 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import com.example.coffeeapp.R
+import androidx.navigation.NavHostController
 import com.example.coffeeapp.model.CategoryItemData
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-fun CategoryPanel() {
+fun CategoryPanel(navHostController: NavHostController) {
     val iconSize = 40.dp
     val cornerRadius = 24.dp
 
     val categories = listOf(
-        CategoryItemData("Ice Drink", R.drawable.ice_drink),
-        CategoryItemData("Hot Drink", R.drawable.hot_drink),
-        CategoryItemData("Hot Coffee", R.drawable.hot_coffee),
-        CategoryItemData("Ice Coffee", R.drawable.ice_coffee),
-        CategoryItemData("Brewing Coffee", R.drawable.brewing_coffee),
-        CategoryItemData("Shake", R.drawable.shake),
-        CategoryItemData("Restaurant", R.drawable.restaurant),
-        CategoryItemData("Breakfast", R.drawable.breakfast),
-        CategoryItemData("Cake", R.drawable.cake)
+        CategoryItemData("Ice Drink", com.example.coffeeapp.R.drawable.ice_drink),
+        CategoryItemData("Hot Drink", com.example.coffeeapp.R.drawable.hot_drink),
+        CategoryItemData("Hot Coffee", com.example.coffeeapp.R.drawable.hot_coffee),
+        CategoryItemData("Ice Coffee", com.example.coffeeapp.R.drawable.ice_coffee),
+        CategoryItemData("Brewing Coffee", com.example.coffeeapp.R.drawable.brewing_coffee),
+        CategoryItemData("Shake", com.example.coffeeapp.R.drawable.shake),
+        CategoryItemData("Restaurant", com.example.coffeeapp.R.drawable.restaurant),
+        CategoryItemData("Breakfast", com.example.coffeeapp.R.drawable.breakfast),
+        CategoryItemData("Cake", com.example.coffeeapp.R.drawable.cake)
     )
 
     Box(
@@ -79,7 +79,9 @@ fun CategoryPanel() {
                                 iconResId = item.iconResId,
                                 label = item.label,
                                 iconSize = iconSize,
-                                onClick = {} // navigate
+                                onClick = {
+                                    navHostController.navigate("DrinkDetail/${item.label}/${item.iconResId}")
+                                }
                             )
                         }
                     }

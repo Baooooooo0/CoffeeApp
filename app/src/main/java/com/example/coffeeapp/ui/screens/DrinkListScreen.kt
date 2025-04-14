@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.coffeeapp.model.DrinkData
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -20,7 +21,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
 @Composable
-fun DrinkListScreen() {
+fun DrinkListScreen(navController: NavHostController) {
     val drinks = remember { mutableStateListOf<DrinkData>() }
 
     LaunchedEffect(Unit) {
@@ -55,4 +56,3 @@ fun DrinkListScreen() {
         }
     }
 }
-
