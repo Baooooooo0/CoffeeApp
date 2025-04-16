@@ -11,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.coffeeapp.model.DrinkData
@@ -18,6 +19,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import coil.compose.AsyncImage
 
 @Composable
 fun DrinkListScreen() {
@@ -51,7 +53,15 @@ fun DrinkListScreen() {
             .padding(16.dp)
     ) {
         items(drinks) { drink ->
+            AsyncImage(
+                model = drink.picUrl.firstOrNull() ?: "", // không crash nếu list trống
+                contentDescription = drink.title,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
             Text(text = drink.title, fontWeight = FontWeight.Bold)
+            Text(text = drink.description)
+            Text(text = "Giá: ${String.format("%.2f", drink.price)}$")
         }
     }
 }

@@ -79,7 +79,7 @@ fun CategoryPanel() {
                                 iconResId = item.iconResId,
                                 label = item.label,
                                 iconSize = iconSize,
-                                onClick = {} // navigate
+                                onClick = {/* TO DO */} // navigate
                             )
                         }
                     }
