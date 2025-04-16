@@ -1,5 +1,6 @@
 package com.example.coffeeapp.ui.screens
 
+import android.app.Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -49,11 +50,12 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
-    navController: NavController,  // Accept navController
+    navController: NavController,
     viewModel: AuthViewModel = viewModel(factory = AuthViewModel.Factory),
     onSignInSuccess: () -> Unit = {}
 ) {
     val context = LocalContext.current
+    val activity = context as? Activity
     val user by viewModel.user.collectAsStateWithLifecycle()
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
     val signInError by viewModel.signInError.collectAsStateWithLifecycle()
@@ -61,7 +63,6 @@ fun LoginScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
-    // Handle sign-in success
     LaunchedEffect(user) {
         user?.let {
             onSignInSuccess()
@@ -90,12 +91,12 @@ fun LoginScreen(
                     modifier = Modifier.size(50.dp)
                 )
             } else {
-                Column(
-                    modifier = Modifier.padding(16.dp)
-                ) {
+                Column(modifier = Modifier.padding(16.dp)) {
                     if (user == null) {
                         SignInContent(
-                            onSignInClick = { viewModel.signIn() },
+                            onSignInClick = {
+                                activity?.let { viewModel.signIn(it) }
+                            }
                         )
                     } else {
                         UserProfileContent(
@@ -109,6 +110,7 @@ fun LoginScreen(
         }
     }
 }
+
 
 @Composable
 private fun SignInContent(
