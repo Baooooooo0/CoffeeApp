@@ -71,4 +71,11 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx) // ViewModel
     implementation(libs.kotlinx.coroutines.android) // Coroutines
     implementation(libs.okhttp.logging) // OkHttp Logging Interceptor}
+
+
+    implementation ("io.coil-kt:coil-compose:2.2.2")
+    implementation("com.google.firebase:firebase-database-ktx:20.3.0")
+
+
+
 }

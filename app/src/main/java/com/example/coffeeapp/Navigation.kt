@@ -8,7 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.coffeeapp.ui.screens.DrinkDetailScreen
+import com.example.coffeeapp.ui.screens.CategoryPanel
 import com.example.coffeeapp.ui.screens.DrinkListScreen
 import com.example.coffeeapp.ui.screens.LoginScreen
 import com.example.coffeeapp.ui.screens.MenuScreen
@@ -25,8 +25,14 @@ fun AppNavigation() {
         composable("Profile") { ProfileScreen(navController) }
         composable("Splash") { SplashScreen(navController) }
         composable("Menu") { MenuScreen(navController) }
-        composable("DrinkList") { DrinkListScreen(navController) }
+        composable("DrinkList") { DrinkListScreen() }
 
+        // ✅ Bổ sung route cho màn Category
+        composable("Category") {
+            CategoryPanel(navHostController = navController)
+        }
+
+        // ✅ Route để hiển thị chi tiết đồ uống
         composable(
             "DrinkDetail/{drinkName}/{imageResId}",
             arguments = listOf(
@@ -36,7 +42,6 @@ fun AppNavigation() {
         ) { backStackEntry ->
             val drinkName = backStackEntry.arguments?.getString("drinkName")
             val imageResId = backStackEntry.arguments?.getInt("imageResId")
-            DrinkDetailScreen(drinkName = drinkName, imageResId = imageResId)
         }
     }
 }
