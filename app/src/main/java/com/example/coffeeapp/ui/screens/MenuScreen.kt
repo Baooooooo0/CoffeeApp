@@ -52,7 +52,7 @@ fun MenuScreen(navHostController: NavHostController) {
                 modifier = Modifier.padding(top = 16.dp)
             )
             Spacer(modifier = Modifier.weight(1f))
-            CategoryPanel(navHostController)
+            CategoryPanel()
         }
     }
 }
