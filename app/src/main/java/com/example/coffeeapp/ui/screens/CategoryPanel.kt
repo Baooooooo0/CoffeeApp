@@ -28,25 +28,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.navigation.NavController
 import com.example.coffeeapp.R
 import com.example.coffeeapp.model.CategoryItemData
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-fun CategoryPanel() {
+fun CategoryPanel(navController: NavController) {
     val iconSize = 40.dp
     val cornerRadius = 24.dp
 
     val categories = listOf(
-        CategoryItemData("Ice Drink", R.drawable.ice_drink),
-        CategoryItemData("Hot Drink", R.drawable.hot_drink),
-        CategoryItemData("Hot Coffee", R.drawable.hot_coffee),
-        CategoryItemData("Ice Coffee", R.drawable.ice_coffee),
-        CategoryItemData("Brewing Coffee", R.drawable.brewing_coffee),
-        CategoryItemData("Shake", R.drawable.shake),
-        CategoryItemData("Restaurant", R.drawable.restaurant),
-        CategoryItemData("Breakfast", R.drawable.breakfast),
-        CategoryItemData("Cake", R.drawable.cake)
+        CategoryItemData("Ice Drink", R.drawable.ice_drink, "1"),
+        CategoryItemData("Hot Drink", R.drawable.hot_drink, "2"),
+        CategoryItemData("Hot Coffee", R.drawable.hot_coffee,"3"),
+        CategoryItemData("Ice Coffee", R.drawable.ice_coffee,"4"),
+        CategoryItemData("Brewing Coffee", R.drawable.brewing_coffee,"5"),
+        CategoryItemData("Shake", R.drawable.shake,"6"),
+        CategoryItemData("Restaurant", R.drawable.restaurant,"7"),
+        CategoryItemData("Breakfast", R.drawable.breakfast,"8"),
+        CategoryItemData("Cake", R.drawable.cake,"9")
     )
 
     Box(
@@ -79,7 +80,7 @@ fun CategoryPanel() {
                                 iconResId = item.iconResId,
                                 label = item.label,
                                 iconSize = iconSize,
-                                onClick = {/* TO DO */} // navigate
+                                onClick = {navController.navigate("category_items/${item.categoryId}")} // navigate
                             )
                         }
                     }
