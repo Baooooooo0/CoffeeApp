@@ -18,11 +18,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.coffeeapp.R
+import com.example.coffeeapp.ui.SetStatusBarIconsLight
 import kotlinx.coroutines.delay
 
 
 @Composable
 fun SplashScreen(navController: NavHostController){
+
+    SetStatusBarIconsLight(isLightIcons = true)
     LaunchedEffect(Unit) {
         delay(3000)
         navController.navigate("Menu") {

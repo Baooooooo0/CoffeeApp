@@ -22,10 +22,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.coffeeapp.R
+import com.example.coffeeapp.ui.SetStatusBarIconsLight
+import com.google.firebase.auth.FirebaseAuth
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun MenuScreen(navHostController: NavHostController) {
+    val user = FirebaseAuth.getInstance().currentUser
+    SetStatusBarIconsLight(isLightIcons = true)
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -45,11 +49,12 @@ fun MenuScreen(navHostController: NavHostController) {
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "Good Morning",
+                text = "Hello\n ${user?.displayName}",
                 fontSize = 42.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
-                modifier = Modifier.padding(top = 16.dp)
+                modifier = Modifier
+                    .padding(top = 64.dp)
             )
             Spacer(modifier = Modifier.weight(1f))
             CategoryPanel(navController = navHostController)

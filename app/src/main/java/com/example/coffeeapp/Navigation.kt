@@ -24,7 +24,7 @@ fun AppNavigation() {
         composable("Menu") { MenuScreen(navController)}
         composable("category_items/{categoryId}") { backStackEntry ->
             val categoryId = backStackEntry.arguments?.getString("categoryId") ?: ""
-            DrinkListScreen(categoryId = categoryId)
+            DrinkListScreen(categoryId = categoryId, navController)
         }
 
     }

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,16 +27,18 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.coffeeapp.model.DrinkData
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import coil.compose.AsyncImage
+import com.example.coffeeapp.recycle.HeaderMenu
 import com.example.coffeeapp.ui.SetStatusBarIconsLight
 
 @Composable
-fun DrinkListScreen(categoryId: String) {
+fun DrinkListScreen(categoryId: String, navController: NavController) {
 
     SetStatusBarIconsLight(isLightIcons = true)
     //API
@@ -60,7 +63,6 @@ fun DrinkListScreen(categoryId: String) {
                         }
                     }
                 }
-
                 override fun onCancelled(error: DatabaseError) {
                     Log.e("Firebase", "Load error: ${error.message}")
                 }
@@ -72,10 +74,10 @@ fun DrinkListScreen(categoryId: String) {
             .fillMaxSize()
             .background(color = Color.Black)
     ) {
+        HeaderMenu(categoryId, navController = navController)
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 150.dp)
                 .background(color = Color.Black)
         ) {
             items(drinks) { drink ->
@@ -86,6 +88,7 @@ fun DrinkListScreen(categoryId: String) {
                         contentColor = Color.White ),
                     shape = RoundedCornerShape(16.dp),
                     modifier = Modifier
+                        .height(230.dp)
                         .fillMaxWidth()
                         .padding(8.dp)
                 ) {
@@ -99,7 +102,7 @@ fun DrinkListScreen(categoryId: String) {
                             contentDescription = "drink_image",
                             modifier = Modifier
                                 .clip(RoundedCornerShape(16.dp))
-                                .size(100.dp),
+                                .size(175.dp),
                             contentScale = ContentScale.Crop
                         )
                         Column(
@@ -107,9 +110,9 @@ fun DrinkListScreen(categoryId: String) {
                                 .padding(start = 5.dp)
                                 .weight(1f)
                         ) {
-                            Text(text = drink.title, fontWeight = FontWeight.Bold, fontSize = 15.sp)
-                            Text(text = drink.description, fontSize = 12.sp)
-                            Text(text = "Price: ${String.format("%.2f", drink.price)}$", fontWeight = FontWeight.Bold, fontSize = 15.sp)
+                            Text(text = drink.title, fontWeight = FontWeight.Bold, fontSize = 25.sp)
+//                            Text(text = drink.description, fontSize = 15.sp)
+                            Text(text = "Price: ${String.format("%.2f", drink.price)}$", fontWeight = FontWeight.Bold, fontSize = 25.sp)
                         }
                     }
                 }
