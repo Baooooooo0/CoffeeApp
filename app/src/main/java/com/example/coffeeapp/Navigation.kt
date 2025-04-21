@@ -6,7 +6,9 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.coffeeapp.ui.screens.CartScreen
 import com.example.coffeeapp.ui.screens.DrinkListScreen
+import com.example.coffeeapp.ui.screens.FavouriteScreen
 import com.example.coffeeapp.ui.screens.LoginScreen
 import com.example.coffeeapp.ui.screens.MenuScreen
 import com.example.coffeeapp.ui.screens.ProfileScreen
@@ -22,10 +24,11 @@ fun AppNavigation() {
         composable("Profile") { ProfileScreen(navController)}
         composable("Splash") {SplashScreen(navController)}
         composable("Menu") { MenuScreen(navController)}
+        composable("Favourite") { FavouriteScreen(navController)}
+        composable("Cart"){ CartScreen(navController)}
         composable("category_items/{categoryId}") { backStackEntry ->
             val categoryId = backStackEntry.arguments?.getString("categoryId") ?: ""
             DrinkListScreen(categoryId = categoryId, navController)
         }
-
     }
 }

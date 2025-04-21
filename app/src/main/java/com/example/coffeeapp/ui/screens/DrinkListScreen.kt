@@ -2,6 +2,8 @@ package com.example.coffeeapp.ui.screens
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,8 +14,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,7 +46,7 @@ import com.example.coffeeapp.ui.SetStatusBarIconsLight
 fun DrinkListScreen(categoryId: String, navController: NavController) {
 
     SetStatusBarIconsLight(isLightIcons = true)
-    //API
+    // API
     val drinks = remember { mutableStateListOf<DrinkData>() }
 
     LaunchedEffect(categoryId) {
@@ -53,10 +58,13 @@ fun DrinkListScreen(categoryId: String, navController: NavController) {
         database.child("Items")
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    drinks.clear()
                     for (itemSnapshot in snapshot.children) {
+                        val key = itemSnapshot.key ?: continue
                         val drink = itemSnapshot.getValue(DrinkData::class.java)
                         drink?.let {
+                            it.id = key
+                            // Nếu Firebase chưa có favourite, thì set false
+                            it.favourite = itemSnapshot.child("favourite").getValue(Boolean::class.java) ?: false
                             if (it.categoryId == categoryId) {
                                 drinks.add(it)
                             }
@@ -81,43 +89,87 @@ fun DrinkListScreen(categoryId: String, navController: NavController) {
                 .background(color = Color.Black)
         ) {
             items(drinks) { drink ->
-                Button(
-                    onClick = {},
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.LightGray,
-                        contentColor = Color.White ),
-                    shape = RoundedCornerShape(16.dp),
+                Box(
                     modifier = Modifier
                         .height(230.dp)
                         .fillMaxWidth()
                         .padding(8.dp)
                 ) {
-                    Row(
+                    Button(
+                        onClick = {},
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.LightGray,
+                            contentColor = Color.White
+                        ),
+                        shape = RoundedCornerShape(16.dp),
                         modifier = Modifier
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
+                            .fillMaxSize()
                     ) {
-                        AsyncImage(
-                            model = drink.picUrl.firstOrNull() ?: "",
-                            contentDescription = "drink_image",
+                        Row(
                             modifier = Modifier
-                                .clip(RoundedCornerShape(16.dp))
-                                .size(175.dp),
-                            contentScale = ContentScale.Crop
-                        )
-                        Column(
-                            modifier = Modifier
-                                .padding(start = 5.dp)
-                                .weight(1f)
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(text = drink.title, fontWeight = FontWeight.Bold, fontSize = 25.sp)
-//                            Text(text = drink.description, fontSize = 15.sp)
-                            Text(text = "Price: ${String.format("%.2f", drink.price)}$", fontWeight = FontWeight.Bold, fontSize = 25.sp)
+                            AsyncImage(
+                                model = drink.picUrl.firstOrNull() ?: "",
+                                contentDescription = "drink_image",
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .size(175.dp),
+                                contentScale = ContentScale.Crop
+                            )
+                            Column(
+                                modifier = Modifier
+                                    .padding(start = 5.dp)
+                                    .weight(1f)
+                            ) {
+                                Text(
+                                    text = drink.title,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 25.sp
+                                )
+                                // Text(text = drink.description, fontSize = 15.sp)
+                                Text(
+                                    text = "Price: ${String.format("%.2f", drink.price)}$",
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 25.sp
+                                )
+                            }
                         }
                     }
+                    Icon(
+                        imageVector = Icons.Filled.Favorite,
+                        contentDescription = "Favorite",
+                        tint = if (drink.favourite) Color.Red else Color.White,
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(16.dp)
+                            .size(36.dp)
+                            .clickable {
+                                val updatedDrink = drink.copy(favourite = !drink.favourite)
+                                val index = drinks.indexOfFirst { it.id == drink.id }
+                                if (index != -1) {
+                                    drinks[index] = updatedDrink
+                                }
+                                val database = FirebaseDatabase.getInstance(
+                                    "https://coffeeappshoputh-default-rtdb.asia-southeast1.firebasedatabase.app"
+                                ).reference
+                                database.child("Items").child(drink.id)
+                                    .child("favourite")
+                                    .setValue(updatedDrink.favourite)
+                                    .addOnSuccessListener {
+                                        Log.d("Firebase", "Favourite updated successfully")
+                                    }
+                                    .addOnFailureListener {
+                                        Log.e("Firebase", "Failed to update favourite: ${it.message}")
+                                    }
+                            }
+                    )
                 }
             }
         }
     }
 }
+
+
 
