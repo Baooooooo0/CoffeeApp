@@ -33,8 +33,8 @@ fun AppNavigation() {
         }
 
 //        composable("drink_detail/{drinkId}") { backStackEntry ->
-//            val drinkId = backStackEntry.arguments?.getString("drinkId")
-//            DrinkListDetail(drinkId = drinkId ?: "", navController = navController)
+//            val drinkId = backStackEntry.arguments?.getString("drinkId") ?: ""
+//            DrinkDetailScreen(drinkId = drinkId, navController = navController)
 //        }
     }
 }

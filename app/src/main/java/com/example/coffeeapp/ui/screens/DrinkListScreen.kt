@@ -96,7 +96,7 @@ fun DrinkListScreen(categoryId: String, navController: NavController) {
                         .padding(8.dp)
                 ) {
                     Button(
-                        onClick = {"drink_detail/${drink.id}"},
+                        onClick = {navController.navigate("drink_detail/${drink.id}")}, //navigate sang detail
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.LightGray,
                             contentColor = Color.White
