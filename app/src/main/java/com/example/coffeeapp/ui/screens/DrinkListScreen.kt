@@ -33,14 +33,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.coffeeapp.model.DrinkData
+import com.example.coffeeapp.recycle.HeaderMenu
+import com.example.coffeeapp.ui.SetStatusBarIconsLight
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import coil.compose.AsyncImage
-import com.example.coffeeapp.recycle.HeaderMenu
-import com.example.coffeeapp.ui.SetStatusBarIconsLight
 
 @Composable
 fun DrinkListScreen(categoryId: String, navController: NavController) {
@@ -96,7 +96,9 @@ fun DrinkListScreen(categoryId: String, navController: NavController) {
                         .padding(8.dp)
                 ) {
                     Button(
-                        onClick = {"drink_detail/${drink.id}"},
+                        onClick = {
+                            navController.navigate("drink_detail/${drink.id}")
+                        },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.LightGray,
                             contentColor = Color.White

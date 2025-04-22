@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.coffeeapp.ui.screens.CartScreen
+import com.example.coffeeapp.ui.screens.DrinkDetailScreen
 import com.example.coffeeapp.ui.screens.DrinkListScreen
 import com.example.coffeeapp.ui.screens.FavouriteScreen
 import com.example.coffeeapp.ui.screens.LoginScreen
@@ -19,7 +20,7 @@ import com.example.coffeeapp.ui.screens.SplashScreen
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "Login") {
+    NavHost(navController = navController, startDestination = "Menu") {
         composable("Login") { LoginScreen(navController) }
         composable("Profile") { ProfileScreen(navController)}
         composable("Splash") {SplashScreen(navController)}
@@ -32,9 +33,9 @@ fun AppNavigation() {
             DrinkListScreen(categoryId = categoryId, navController)
         }
 
-//        composable("drink_detail/{drinkId}") { backStackEntry ->
-//            val drinkId = backStackEntry.arguments?.getString("drinkId")
-//            DrinkListDetail(drinkId = drinkId ?: "", navController = navController)
-//        }
+        composable("drink_detail/{drinkId}") { backStackEntry ->
+            val drinkId = backStackEntry.arguments?.getString("drinkId")
+            DrinkDetailScreen(drinkId = drinkId ?: "", navController = navController)
+        }
     }
 }
