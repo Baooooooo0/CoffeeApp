@@ -21,7 +21,7 @@ import com.google.gson.Gson
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "Splash") {
+    NavHost(navController = navController, startDestination = "Menu") {
         composable("Login") { LoginScreen(navController) }
         composable("Profile") { ProfileScreen(navController) }
         composable("Splash") { SplashScreen(navController) }

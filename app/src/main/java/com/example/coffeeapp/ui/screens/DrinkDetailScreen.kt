@@ -54,7 +54,7 @@ fun DrinkDetailScreen(drink: DrinkData) {
             contentDescription = drink.title,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(250.dp)
+                .height(350.dp) // Điều chỉnh chiều cao ảnh (có thể thay đổi tùy ý)
                 .clip(RoundedCornerShape(20.dp)),
             contentScale = ContentScale.Crop
         )
@@ -112,7 +112,7 @@ fun DrinkDetailScreen(drink: DrinkData) {
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .padding(end = 10.dp)
+                        .padding(end = 5.dp)
                         .size(48.dp)
                         .clip(CircleShape)
                         .background(if (isSelected) Color(0xFFFFA500) else Color.DarkGray)
@@ -137,3 +137,4 @@ fun DrinkDetailScreen(drink: DrinkData) {
         }
     }
 }
+
