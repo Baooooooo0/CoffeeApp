@@ -26,9 +26,15 @@ fun AppNavigation() {
         composable("Menu") { MenuScreen(navController)}
         composable("Favourite") { FavouriteScreen(navController)}
         composable("Cart"){ CartScreen(navController)}
+
         composable("category_items/{categoryId}") { backStackEntry ->
             val categoryId = backStackEntry.arguments?.getString("categoryId") ?: ""
             DrinkListScreen(categoryId = categoryId, navController)
         }
+
+//        composable("drink_detail/{drinkId}") { backStackEntry ->
+//            val drinkId = backStackEntry.arguments?.getString("drinkId")
+//            DrinkListDetail(drinkId = drinkId ?: "", navController = navController)
+//        }
     }
 }
