@@ -19,7 +19,7 @@ import com.example.coffeeapp.ui.screens.SplashScreen
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "Login") {
+    NavHost(navController = navController, startDestination = "Splash") {
         composable("Login") { LoginScreen(navController) }
         composable("Profile") { ProfileScreen(navController)}
         composable("Splash") {SplashScreen(navController)}
