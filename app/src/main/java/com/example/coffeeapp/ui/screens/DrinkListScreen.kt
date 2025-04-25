@@ -46,7 +46,6 @@ import com.google.firebase.database.ValueEventListener
 fun DrinkListScreen(categoryId: String, navController: NavController) {
 
     SetStatusBarIconsLight(isLightIcons = true)
-    // API
     val drinks = remember { mutableStateListOf<DrinkData>() }
 
     LaunchedEffect(categoryId) {
@@ -63,7 +62,6 @@ fun DrinkListScreen(categoryId: String, navController: NavController) {
                         val drink = itemSnapshot.getValue(DrinkData::class.java)
                         drink?.let {
                             it.id = key
-                            // Nếu Firebase chưa có favourite, thì set false
                             it.favourite = itemSnapshot.child("favourite").getValue(Boolean::class.java) ?: false
                             if (it.categoryId == categoryId) {
                                 drinks.add(it)
