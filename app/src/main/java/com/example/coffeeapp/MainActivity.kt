@@ -6,7 +6,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
-import com.example.coffeeapp.ui.screens.DrinkListScreen
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.coffeeapp.viewmodel.CartViewModel
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.S)
@@ -14,9 +18,21 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-//            DrinkListScreen()
-            AppNavigation()
+            AppContent()
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+fun AppContent() {
+    val cartViewModel: CartViewModel = viewModel()
+    val context = LocalContext.current
+
+    LaunchedEffect(context) {
+        cartViewModel.init(context)
+    }
+
+    // DrinkListScreen()
+    AppNavigation()
+}
