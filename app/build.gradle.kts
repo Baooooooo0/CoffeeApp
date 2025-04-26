@@ -71,4 +71,5 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx) // ViewModel
     implementation(libs.kotlinx.coroutines.android) // Coroutines
     implementation(libs.okhttp.logging) // OkHttp Logging Interceptor}
+
 }

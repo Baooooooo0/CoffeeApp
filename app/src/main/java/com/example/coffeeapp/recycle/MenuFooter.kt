@@ -21,66 +21,85 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.ShoppingCart// 👈 bạn cần thêm dòng này
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Icon
+import androidx.compose.ui.res.painterResource
 
 
 import androidx.navigation.NavController
+import com.example.coffeeapp.R
 
 @Composable
-fun FooterMenu(navController: NavController){
+fun FooterMenu(navController: NavController) {
     Box(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.BottomCenter
     ) {
         Card(
             modifier = Modifier
                 .padding(bottom = 15.dp)
                 .fillMaxWidth()
-                .width(200.dp)
-                .height(75.dp)
-                .background(Color.Black),
+                .height(75.dp),
             shape = RoundedCornerShape(32.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.DarkGray
-            )
+            colors = CardDefaults.cardColors(containerColor = Color.DarkGray),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 24.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceEvenly
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = Icons.Filled.Favorite,
-                    contentDescription = "Favorite",
-                    tint = Color.White,
+                Row(
                     modifier = Modifier
-                        .size(40.dp)
-                        .clickable { navController.navigate("Favourite") }
-                )
-                Spacer(modifier = Modifier.width(48.dp))
-                Icon(
-                    imageVector = Icons.Filled.Home,
-                    contentDescription = "Home",
-                    tint = Color.White,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clickable { navController.navigate("Menu") }
-                )
-                Spacer(modifier = Modifier.width(48.dp))
-                Icon(
-                    imageVector = Icons.Filled.ShoppingCart,
-                    contentDescription = "Cart",
-                    tint = Color.White,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clickable { navController.navigate("Cart")}
-                )
+                        .fillMaxWidth()
+                        .padding(horizontal = 5.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.icon_history),
+                        contentDescription = "History",
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clickable { navController.navigate("History") }
+                    )
+                    Icon(
+                        imageVector = Icons.Filled.Favorite,
+                        contentDescription = "Favorite",
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clickable { navController.navigate("Favourite") }
+                    )
+                    Icon(
+                        imageVector = Icons.Filled.Home,
+                        contentDescription = "Home",
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clickable { navController.navigate("Menu") }
+                    )
+                    Icon(
+                        imageVector = Icons.Filled.ShoppingCart,
+                        contentDescription = "Cart",
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clickable { navController.navigate("Cart") }
+                    )
+                    Icon(
+                        imageVector = Icons.Filled.AccountCircle,
+                        contentDescription = "Profile",
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clickable { navController.navigate("Profile") }
+                    )
+                }
             }
         }
     }

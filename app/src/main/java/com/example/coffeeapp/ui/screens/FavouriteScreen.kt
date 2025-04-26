@@ -2,6 +2,7 @@ package com.example.coffeeapp.ui.screens
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -20,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.coffeeapp.model.DrinkData
+import com.example.coffeeapp.recycle.HeaderScreen
 import com.example.coffeeapp.ui.SetStatusBarIconsLight
 import com.google.firebase.database.*
 
@@ -74,12 +76,7 @@ fun FavouriteScreen(navController: NavController) {
             .fillMaxSize()
             .background(Color.Black)
     ) {
-        Text(
-            text = "Favourite Drinks",
-            color = Color.White,
-            fontSize = 30.sp,
-            modifier = Modifier.padding(16.dp)
-        )
+        HeaderScreen(navController = navController,detail = "Favourite Drinks")
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -93,7 +90,7 @@ fun FavouriteScreen(navController: NavController) {
                         .padding(8.dp)
                 ) {
                     Button(
-                        onClick = { },
+                        onClick = {navController.navigate("drink_detail/${drink.id}")},
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.DarkGray,
                             contentColor = Color.White
@@ -134,12 +131,33 @@ fun FavouriteScreen(navController: NavController) {
                     }
                     Icon(
                         imageVector = Icons.Filled.Favorite,
-                        contentDescription = "Favorite Icon",
-                        tint = Color.Red,
+                        contentDescription = "Favorite",
+                        tint = if (drink.favourite) Color.Red else Color.White,
                         modifier = Modifier
                             .align(Alignment.TopEnd)
                             .padding(16.dp)
                             .size(36.dp)
+                            .clickable {
+                                val updatedDrink = drink.copy(favourite = !drink.favourite)
+                                val index = favouriteDrinks.indexOfFirst { it.id == drink.id }
+                                if (index != -1) {
+                                    favouriteDrinks[index] = updatedDrink
+                                }
+
+                                val database = FirebaseDatabase.getInstance(
+                                    "https://coffeeappshoputh-default-rtdb.asia-southeast1.firebasedatabase.app"
+                                ).reference
+
+                                database.child("Items").child(drink.id)
+                                    .child("favourite")
+                                    .setValue(updatedDrink.favourite)
+                                    .addOnSuccessListener {
+                                        Log.d("Firebase", "Favourite updated successfully")
+                                    }
+                                    .addOnFailureListener {
+                                        Log.e("Firebase", "Failed to update favourite: ${it.message}")
+                                    }
+                            }
                     )
                 }
             }
