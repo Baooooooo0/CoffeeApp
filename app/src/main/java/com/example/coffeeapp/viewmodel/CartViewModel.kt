@@ -24,15 +24,20 @@ class CartViewModel : ViewModel() {
     }
 
     fun addToCart(item: CartItem) {
-        cartItems.add(item)
-        recalculateTotal()
-        saveCart() // << thêm dòng này để lưu giỏ hàng sau mỗi lần add
+        val existingItem = cartItems.find { it.name == item.name }
+        if (existingItem != null) {
+            updateItemQuantity(existingItem, existingItem.quantity + 1)
+        } else {
+            cartItems.add(item)
+            recalculateTotal()
+            saveCart()
+        }
     }
 
     fun removeFromCart(item: CartItem) {
         cartItems.remove(item)
         recalculateTotal()
-        saveCart() // << thêm dòng này
+        saveCart()
     }
 
     fun increaseQuantity(item: CartItem) {
@@ -40,7 +45,7 @@ class CartViewModel : ViewModel() {
         if (index != -1) {
             cartItems[index] = cartItems[index].copy(quantity = cartItems[index].quantity + 1)
             recalculateTotal()
-            saveCart() // << thêm dòng này
+            saveCart()
         }
     }
 
@@ -49,15 +54,16 @@ class CartViewModel : ViewModel() {
         if (index != -1 && cartItems[index].quantity > 1) {
             cartItems[index] = cartItems[index].copy(quantity = cartItems[index].quantity - 1)
             recalculateTotal()
-            saveCart() // << thêm dòng này
+            saveCart()
         }
     }
 
-    fun updateItemQuantity(index: Int, newQuantity: Int) {
-        if (index in cartItems.indices) {
+    fun updateItemQuantity(item: CartItem, newQuantity: Int) {
+        val index = cartItems.indexOf(item)
+        if (index != -1) {
             cartItems[index] = cartItems[index].copy(quantity = newQuantity)
             recalculateTotal()
-            saveCart() // << thêm dòng này
+            saveCart()
         }
     }
 
@@ -65,14 +71,14 @@ class CartViewModel : ViewModel() {
         if (index in cartItems.indices) {
             cartItems.removeAt(index)
             recalculateTotal()
-            saveCart() // << thêm dòng này
+            saveCart()
         }
     }
 
     fun clearCart() {
         cartItems.clear()
         _totalPrice.value = 0.0
-        saveCart() // << thêm dòng này
+        saveCart()
     }
 
     private fun recalculateTotal() {

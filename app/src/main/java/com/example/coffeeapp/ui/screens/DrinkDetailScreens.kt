@@ -194,7 +194,16 @@ fun DrinkDetailScreen(drinkId: String, navController: NavController, cartViewMod
                                 quantity = 1,
                                 imageRes = R.drawable.ice_drink
                             )
-                            cartViewModel.addToCart(newItem)
+
+                            // Kiểm tra xem sản phẩm đã có trong giỏ chưa
+                            val existingItem = cartViewModel.cartItems.find { it.name == newItem.name }
+                            if (existingItem != null) {
+                                // Cập nhật số lượng thay vì tạo mục mới
+                                cartViewModel.updateItemQuantity(existingItem, existingItem.quantity + 1)
+                            } else {
+                                // Thêm sản phẩm mới vào giỏ
+                                cartViewModel.addToCart(newItem)
+                            }
 
                             coroutineScope.launch {
                                 snackbarHostState.showSnackbar("Add success")
@@ -253,3 +262,4 @@ fun DrinkDetailScreen(drinkId: String, navController: NavController, cartViewMod
         }
     }
 }
+
