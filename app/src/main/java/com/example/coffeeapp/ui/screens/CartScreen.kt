@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -66,7 +68,7 @@ fun CartScreen(navController: NavController, cartViewModel: CartViewModel) {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "Tổng Cộng: ${"%,.2f".format(totalPrice)} VND",
+                        text = "Total: ${"%,.2f".format(totalPrice)} $",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
@@ -75,14 +77,14 @@ fun CartScreen(navController: NavController, cartViewModel: CartViewModel) {
                         onClick = {
                             if (cartItems.isNotEmpty()) {
                                 coroutineScope.launch {
-                                    snackbarHostState.showSnackbar("Bạn đã thanh toán thành công!")
+                                    snackbarHostState.showSnackbar("You've paid successfully!")
                                 }
-                                cartViewModel.clearCart()
+                                cartViewModel.clearCart() // Xóa giỏ hàng sau khi thanh toán
                             }
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFA500))
                     ) {
-                        Text("Thanh Toán")
+                        Text("Pay Now")
                     }
                 }
             }
@@ -96,29 +98,24 @@ fun CartScreen(navController: NavController, cartViewModel: CartViewModel) {
                 .fillMaxSize()
         ) {
             Text(
-                text = "Giỏ Hàng",
+                text = "Shopping Cart",
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            cartItems.forEachIndexed { index, item ->
-                CartItemRow(
-                    item = item,
-                    onIncrease = {
-                        cartViewModel.updateItemQuantity(index, item.quantity + 1)
-                    },
-                    onDecrease = {
-                        if (item.quantity > 1) {
-                            cartViewModel.updateItemQuantity(index, item.quantity - 1)
-                        }
-                    },
-                    onDelete = {
-                        cartViewModel.removeItem(index)
-                    }
-                )
-                Spacer(modifier = Modifier.height(12.dp))
+            // Dùng LazyColumn để cuộn giỏ hàng
+            LazyColumn {
+                items(cartItems) { item ->
+                    CartItemRow(
+                        item = item,
+                        onIncrease = { cartViewModel.increaseQuantity(item) },
+                        onDecrease = { cartViewModel.decreaseQuantity(item) },
+                        onDelete = { cartViewModel.removeFromCart(item) }
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
             }
         }
     }
@@ -155,7 +152,7 @@ fun CartItemRow(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "${"%,.2f".format(item.price * quantity)} đ",
+                    text = "${"%,.2f".format(item.price * quantity)} $",
                     fontSize = 14.sp,
                     color = Color.Gray
                 )
@@ -176,7 +173,7 @@ fun CartItemRow(
             ) {
                 Icon(
                     imageVector = Icons.Default.Delete,
-                    contentDescription = "Xóa",
+                    contentDescription = "Delete",
                     tint = Color.White
                 )
             }
@@ -190,12 +187,7 @@ fun CartItemRow(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Button(
-                onClick = {
-                    if (quantity > 1) {
-                        quantity--
-                        onDecrease()
-                    }
-                },
+                onClick = { if (quantity > 1) { quantity--; onDecrease() } },
                 contentPadding = PaddingValues(0.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
                 modifier = Modifier.size(36.dp)
@@ -211,10 +203,7 @@ fun CartItemRow(
             )
             Spacer(modifier = Modifier.width(8.dp))
             Button(
-                onClick = {
-                    quantity++
-                    onIncrease()
-                },
+                onClick = { quantity++; onIncrease() },
                 contentPadding = PaddingValues(0.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
                 modifier = Modifier.size(36.dp)
