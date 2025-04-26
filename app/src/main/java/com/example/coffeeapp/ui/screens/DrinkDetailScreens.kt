@@ -61,7 +61,6 @@ fun DrinkDetailScreen(drinkId: String, navController: NavController, cartViewMod
     var isLoading by remember { mutableStateOf(true) }
 
     val snackbarHostState = remember { SnackbarHostState() }
-
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(drinkId) {
@@ -210,18 +209,39 @@ fun DrinkDetailScreen(drinkId: String, navController: NavController, cartViewMod
                     }
                 }
 
-                Icon(
-                    imageVector = Icons.Default.ShoppingCart,
-                    contentDescription = "Cart",
-                    tint = Color.White,
+                // ICON CART + BADGE
+                Box(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(16.dp)
-                        .size(30.dp)
                         .clickable {
                             navController.navigate("Cart")
                         }
-                )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ShoppingCart,
+                        contentDescription = "Cart",
+                        tint = Color.White,
+                        modifier = Modifier.size(30.dp)
+                    )
+
+                    if (cartViewModel.cartItems.isNotEmpty()) {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .size(16.dp)
+                                .background(Color.Red, CircleShape)
+                                .align(Alignment.TopEnd)
+                        ) {
+                            Text(
+                                text = cartViewModel.cartItems.sumOf { it.quantity }.toString(),
+                                color = Color.White,
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                }
             }
         } ?: run {
             Box(
