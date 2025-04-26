@@ -77,10 +77,7 @@ fun DrinkDetailScreen(drinkId: String, navController: NavController, cartViewMod
     }
 
     if (isLoading) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text("Loading...", color = Color.White)
         }
         return
@@ -181,11 +178,10 @@ fun DrinkDetailScreen(drinkId: String, navController: NavController, cartViewMod
                     onClick = {
                         val newItem = CartItem(
                             name = drink?.title ?: "",
-                            price = drink?.price ?: 0.0,
+                            price = (drink?.price ?: 0.0),
                             quantity = 1,
                             imageRes = R.drawable.ice_drink
                         )
-
                         cartViewModel.addToCart(newItem)
                         navController.navigate("Cart")
                     },
@@ -205,7 +201,7 @@ fun DrinkDetailScreen(drinkId: String, navController: NavController, cartViewMod
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(16.dp)
-                    .size(24.dp)
+                    .size(30.dp)
                     .clickable {
                         navController.navigate("Cart")
                     }

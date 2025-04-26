@@ -1,8 +1,11 @@
+@file:Suppress("UNREACHABLE_CODE")
+
 package com.example.coffeeapp
 
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -15,19 +18,21 @@ import com.example.coffeeapp.ui.screens.LoginScreen
 import com.example.coffeeapp.ui.screens.MenuScreen
 import com.example.coffeeapp.ui.screens.ProfileScreen
 import com.example.coffeeapp.ui.screens.SplashScreen
-
+import com.example.coffeeapp.viewmodel.CartViewModel
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "Login") {
+    val cartViewModel: CartViewModel = viewModel()
+
+    NavHost(navController = navController, startDestination = "Menu") {
         composable("Login") { LoginScreen(navController) }
         composable("Profile") { ProfileScreen(navController)}
-        composable("Splash") {SplashScreen(navController)}
+        composable("Splash") { SplashScreen(navController)}
         composable("Menu") { MenuScreen(navController)}
         composable("Favourite") { FavouriteScreen(navController)}
-        composable("Cart"){ CartScreen(navController)}
+        composable("Cart") { CartScreen(navController, cartViewModel) }
         composable("History") { HistoryScreen(navController)}
 
         composable("category_items/{categoryId}") { backStackEntry ->
@@ -37,7 +42,7 @@ fun AppNavigation() {
 
         composable("drink_detail/{drinkId}") { backStackEntry ->
             val drinkId = backStackEntry.arguments?.getString("drinkId") ?: ""
-            DrinkDetailScreen(drinkId = drinkId, navController = navController)
+            DrinkDetailScreen(drinkId = drinkId, navController = navController, cartViewModel = cartViewModel)
         }
     }
 }

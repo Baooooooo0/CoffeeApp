@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.coffeeapp.R
+import com.example.coffeeapp.recycle.FooterMenu
 import com.example.coffeeapp.ui.SetStatusBarIconsLight
 import com.google.firebase.auth.FirebaseAuth
 
@@ -61,5 +62,6 @@ fun MenuScreen(navHostController: NavHostController) {
             CategoryPanel(navController = navHostController)
             Spacer(modifier = Modifier.height(65.dp))
         }
+        FooterMenu(navController = navHostController)
     }
 }
