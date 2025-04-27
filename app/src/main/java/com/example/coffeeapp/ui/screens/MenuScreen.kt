@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -51,13 +52,16 @@ fun MenuScreen(navHostController: NavHostController) {
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "SHOP COFFEE\n ${user?.displayName}",
+                text = "SHOP COFFEE\n ${user?.displayName ?: "Welcome!"}",
                 fontSize = 42.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
+                textAlign = TextAlign.Center,
                 modifier = Modifier
                     .padding(top = 64.dp)
             )
+
+
             Spacer(modifier = Modifier.weight(1f))
             CategoryPanel(navController = navHostController)
             Spacer(modifier = Modifier.height(65.dp))
