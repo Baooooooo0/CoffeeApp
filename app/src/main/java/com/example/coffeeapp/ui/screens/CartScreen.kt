@@ -28,11 +28,8 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -129,8 +126,6 @@ fun CartItemRow(
     onDecrease: () -> Unit,
     onDelete: () -> Unit
 ) {
-    var quantity by remember { mutableIntStateOf(item.quantity) }
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -153,14 +148,14 @@ fun CartItemRow(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "${"%,.2f".format(item.price * quantity)} $",
+                    text = "${"%,.2f".format(item.price * item.quantity)} $",
                     fontSize = 14.sp,
                     color = Color.Gray
                 )
             }
 
             Text(
-                text = "x$quantity",
+                text = "x${item.quantity}",
                 fontSize = 16.sp,
                 color = Color.Black,
                 modifier = Modifier.padding(end = 16.dp)
@@ -188,7 +183,7 @@ fun CartItemRow(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Button(
-                onClick = { if (quantity > 1) { quantity--; onDecrease() } },
+                onClick = { if (item.quantity > 1) onDecrease() },
                 contentPadding = PaddingValues(0.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
                 modifier = Modifier.size(36.dp)
@@ -197,14 +192,14 @@ fun CartItemRow(
             }
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = quantity.toString(),
+                text = item.quantity.toString(),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
             )
             Spacer(modifier = Modifier.width(8.dp))
             Button(
-                onClick = { quantity++; onIncrease() },
+                onClick = onIncrease,
                 contentPadding = PaddingValues(0.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
                 modifier = Modifier.size(36.dp)

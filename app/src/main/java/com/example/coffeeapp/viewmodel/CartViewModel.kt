@@ -45,10 +45,17 @@ class CartViewModel : ViewModel() {
     }
 
     fun removeFromCart(item: CartItem) {
-        cartItems.remove(item)
-        recalculateTotal()
-        saveCart()
+        val index = cartItems.indexOfFirst {
+            it.name == item.name &&
+                    it.price == item.price
+        }
+        if (index != -1) {
+            cartItems.removeAt(index)
+            recalculateTotal()
+            saveCart()
+        }
     }
+
 
     fun increaseQuantity(item: CartItem) {
         val index = cartItems.indexOf(item)
