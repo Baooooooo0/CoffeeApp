@@ -51,7 +51,7 @@ fun MenuScreen(navHostController: NavHostController) {
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "Hello\n ${user?.displayName}",
+                text = "COFFEE SHOP\n ${user?.displayName}",
                 fontSize = 42.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,

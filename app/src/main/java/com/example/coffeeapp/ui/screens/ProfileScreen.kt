@@ -43,7 +43,7 @@ fun HeaderProfile(navHostController: NavHostController, detail: String){
     ) {
         Box {
             Button(
-                onClick = {navHostController.popBackStack()},
+                onClick = { navHostController.popBackStack() },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.White,
                     contentColor = Color(0xFF42AFFF)
@@ -51,8 +51,7 @@ fun HeaderProfile(navHostController: NavHostController, detail: String){
                 modifier = Modifier
                     .align(Alignment.TopStart)
                     .padding(top = 40.dp, start = 5.dp, end = 15.dp, bottom = 15.dp)
-            )
-            {
+            ) {
                 Text(
                     text = "<",
                     fontSize = 40.sp
@@ -77,7 +76,7 @@ fun ProfileScreen(navController: NavHostController) {
 
     val user = FirebaseAuth.getInstance().currentUser
     var userName by remember { mutableStateOf(user?.displayName ?: "") }
-    var userEmail = user?.email ?: "No email available"
+    var userEmail by remember { mutableStateOf(user?.email ?: "No email available") }
     val imageUrl = user?.photoUrl?.toString() ?: ""
 
     Box(
@@ -100,7 +99,7 @@ fun ProfileScreen(navController: NavHostController) {
                     .padding(top = 120.dp)
                     .background(color = Color.White)
             ) {
-                Box(modifier = Modifier.fillMaxHeight()){
+                Box(modifier = Modifier.fillMaxHeight()) {
                     if (imageUrl.isNotEmpty()) {
                         AsyncImage(
                             model = imageUrl,
@@ -120,13 +119,14 @@ fun ProfileScreen(navController: NavHostController) {
                     }
                     Image(
                         painter = painterResource(id = R.drawable.camera_image),
-                        contentDescription ="Camera Icon",
+                        contentDescription = "Camera Icon",
                         modifier = Modifier
                             .size(40.dp)
                     )
                 }
             }
         }
+
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -144,7 +144,9 @@ fun ProfileScreen(navController: NavHostController) {
                     .fillMaxWidth()
                     .padding(horizontal = 32.dp)
             )
+
             Spacer(modifier = Modifier.height(20.dp))
+
             Text(
                 text = "Email",
                 fontWeight = FontWeight.Bold,
@@ -159,7 +161,29 @@ fun ProfileScreen(navController: NavHostController) {
                     .fillMaxWidth()
                     .padding(horizontal = 32.dp)
             )
-            Spacer(modifier = Modifier.height(20.dp))
+
+            Spacer(modifier = Modifier.height(30.dp))
+
+            // -------- NÚT ĐĂNG XUẤT --------
+            Button(
+                onClick = {
+                    FirebaseAuth.getInstance().signOut()
+                    navController.navigate("Login") {
+                        popUpTo(0) { inclusive = true } // Xóa hết backstack, về Login sạch sẽ
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Red,
+                    contentColor = Color.White
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp)
+                    .height(50.dp)
+            ) {
+                Text(text = "Đăng xuất", fontSize = 18.sp)
+            }
+            // -------- END NÚT ĐĂNG XUẤT --------
         }
     }
 }

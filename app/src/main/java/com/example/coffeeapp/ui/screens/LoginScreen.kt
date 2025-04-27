@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,12 +15,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -27,23 +27,23 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
 import com.example.coffeeapp.R
 import com.example.coffeeapp.sign_in.AuthViewModel
 import kotlinx.coroutines.launch
@@ -66,6 +66,9 @@ fun LoginScreen(
     LaunchedEffect(user) {
         user?.let {
             onSignInSuccess()
+            navController.navigate("Splash") {
+                popUpTo("Login") { inclusive = true }
+            }
         }
     }
 
@@ -91,31 +94,39 @@ fun LoginScreen(
                     modifier = Modifier.size(50.dp)
                 )
             } else {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    if (user == null) {
-                        SignInContent(
-                            onSignInClick = {
-                                activity?.let { viewModel.signIn(it) }
-                            }
-                        )
-                    } else {
-                        UserProfileContent(
-                            user = user,
-                            onSignOutClick = { viewModel.signOut() },
-                            navController = navController
-                        )
-                    }
+                Column(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    SignInContent(
+                        navController = navController,
+                        onSignInClick = { activity?.let { viewModel.signIn(it) } },
+                        onSignInSuccess = onSignInSuccess,
+                        snackbarHostState = snackbarHostState,
+                        isLoading = isLoading,
+                        viewModel = viewModel
+                    )
                 }
             }
         }
     }
 }
 
-
 @Composable
 private fun SignInContent(
+    navController: NavController,
     onSignInClick: () -> Unit,
+    onSignInSuccess: () -> Unit,
+    snackbarHostState: SnackbarHostState,
+    isLoading: Boolean,
+    viewModel: AuthViewModel
 ) {
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    val coroutineScope = rememberCoroutineScope()
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -128,151 +139,102 @@ private fun SignInContent(
             fontWeight = FontWeight.Bold,
             fontSize = 35.sp,
             color = Color(0xFF2196F3),
-            modifier = Modifier.padding(top = 200.dp)
+            modifier = Modifier.padding(top = 80.dp)
         )
 
         Text(
             text = "Coffee for you",
             color = Color(0xFF2196F3),
         )
-        Column(
-            verticalArrangement = Arrangement.Bottom,
-            horizontalAlignment = Alignment.CenterHorizontally,
+
+        Spacer(modifier = Modifier.height(30.dp))
+
+        OutlinedTextField(
+            value = email,
+            onValueChange = { email = it },
+            label = { Text("Email") },
             modifier = Modifier
-                .fillMaxHeight()
-                .padding(bottom = 200.dp)
-        ){
-            Text(
-                text = "Welcome",
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.headlineSmall,
-                modifier = Modifier.padding(bottom = 8.dp),
-                fontSize = 23.sp,
-                textAlign = TextAlign.Center
-            )
-            Text(
-                text = "Ready to explore? Log in to get started.",
-                fontSize = 18.sp,
-                modifier = Modifier.padding(bottom = 20.dp)
-            )
-            Button(
-                onClick = onSignInClick,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFD5EDFF),
-                    contentColor = Color(0xFF130160)
-                ),
-                shape = RoundedCornerShape(12.dp),
-                modifier = Modifier
-                    .width(500.dp)
-                    .height(75.dp)
-                    .padding(start = 30.dp, end = 30.dp)
-            ) {
-                Row {
-                    Image(
-                        painter = painterResource(id = R.drawable.icon_google),
-                        contentDescription = "Google Icon",
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Text(
-                        text = " SIGN IN WITH GOOGLE",
-                        fontSize = 20.sp,
-                    )
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+        )
+
+        OutlinedTextField(
+            value = password,
+            onValueChange = { password = it },
+            label = { Text("Password") },
+            visualTransformation = PasswordVisualTransformation(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = {
+                coroutineScope.launch {
+                    viewModel.signInWithEmail(email, password)
                 }
-            }
-        }
-    }
-}
-
-
-@Composable
-private fun UserProfileContent(
-    user: com.google.firebase.auth.FirebaseUser?,
-    onSignOutClick: () -> Unit,
-    navController: NavController
-) {
-    val profilePainter = rememberAsyncImagePainter(
-        model = user?.photoUrl
-    )
-
-    Column(
-        modifier = Modifier.fillMaxSize(),
-    ) {
-        Box(Modifier.fillMaxWidth().padding(bottom = 100.dp)) {
-            Button(
-                onClick = { navController.navigate("Profile") },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White,
-                    contentColor = Color(0xFF42AFFF)
-                ),
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-            ) {
-                Text(
-                    text = "Profile",
-                    fontSize = 25.sp
-                )
-            }
-
-            Button(
-                onClick = onSignOutClick,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White,
-                    contentColor = Color(0xFF42AFFF)
-                ),
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-            ) {
-                Text(
-                    text = "Sign Out",
-                    fontSize = 25.sp
-                )
-            }
-        }
-
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+            },
+            enabled = !isLoading,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF42A5F5),
+                contentColor = Color.White
+            ),
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
         ) {
-            AsyncImage(
-                model = user?.photoUrl,
-                contentDescription = "Profile Picture",
-                placeholder = profilePainter,
-                fallback = profilePainter,
-                modifier = Modifier
-                    .size(250.dp)
-                    .clip(CircleShape)
-            )
-
-            Text(
-                text = "Welcome, ${user?.displayName ?: "User"}",
-                style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier.padding(top = 16.dp)
-            )
-
-            Text(
-                text = user?.email ?: "",
-                fontSize = 20.sp,
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
+            Text(text = "Login with Email")
         }
-        Box(Modifier.fillMaxSize()){
-            Button(
-                onClick = {navController.navigate("Splash")},
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF42AFFF),
-                    contentColor = Color.White
-                ),
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .height(50.dp)
-                    .width(350.dp)
-                    .padding(start = 15.dp, end = 15.dp)
-            ) {
-                Text(
-                    text = "Get Started",
-                    fontSize = 25.sp,
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Button(
+            onClick = { navController.navigate("Register") },
+            enabled = !isLoading,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.LightGray,
+                contentColor = Color.Black
+            ),
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+        ) {
+            Text(text = "Don't have an account? Register")
+        }
+
+        Spacer(modifier = Modifier.height(30.dp))
+
+        Text(
+            text = "OR",
+            fontSize = 18.sp,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(vertical = 8.dp)
+        )
+
+        Button(
+            onClick = onSignInClick,
+            enabled = !isLoading,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFFD5EDFF),
+                contentColor = Color(0xFF130160)
+            ),
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Image(
+                    painter = painterResource(id = R.drawable.icon_google),
+                    contentDescription = "Google Icon",
+                    modifier = Modifier.size(24.dp)
                 )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(text = "Sign In with Google")
             }
         }
     }
