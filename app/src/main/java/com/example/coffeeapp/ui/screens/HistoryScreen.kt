@@ -28,7 +28,7 @@ fun HistoryScreen(navController: NavController, cartViewModel: CartViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color.Black)
+//            .background(color = Color.Black)
             .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {
         HeaderScreen(navController = navController, detail = "Your History")
@@ -66,8 +66,10 @@ fun HistoryScreen(navController: NavController, cartViewModel: CartViewModel) {
                     Text(
                         text = "Order #${history.size - index} - $timestamp",
                         fontWeight = FontWeight.Bold,
+//                        textDecoration = Color.White,
                         fontSize = 16.sp,
-                        modifier = Modifier.padding(vertical = 8.dp)
+                        modifier = Modifier
+                            .padding(vertical = 8.dp)
                     )
 
                     order.forEach { item ->

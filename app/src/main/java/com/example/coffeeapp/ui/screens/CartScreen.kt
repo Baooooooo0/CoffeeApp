@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.coffeeapp.model.CartItem
+import com.example.coffeeapp.recycle.HeaderScreen
 import com.example.coffeeapp.viewmodel.CartViewModel
 import kotlinx.coroutines.launch
 
@@ -53,6 +54,9 @@ fun CartScreen(navController: NavController, cartViewModel: CartViewModel) {
 
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        topBar = {
+            HeaderScreen(navController = navController, detail = "Shopping Cart")
+        },
         bottomBar = {
             BottomAppBar(
                 containerColor = Color.White,
@@ -95,6 +99,7 @@ fun CartScreen(navController: NavController, cartViewModel: CartViewModel) {
                 .padding(16.dp)
                 .fillMaxSize()
         ) {
+
             Text(
                 text = "Shopping Cart",
                 fontSize = 22.sp,
