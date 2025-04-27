@@ -65,6 +65,7 @@ fun LoginScreen(
 
     LaunchedEffect(user) {
         user?.let {
+            // Đảm bảo chỉ thực hiện nếu user không phải là null
             onSignInSuccess()
             navController.navigate("Splash") {
                 popUpTo("Login") { inclusive = true }
