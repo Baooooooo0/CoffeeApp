@@ -40,6 +40,7 @@ fun RegisterScreen(
     val coroutineScope = rememberCoroutineScope()
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
     val signInError by viewModel.signInError.collectAsStateWithLifecycle()
+    val user by viewModel.user.collectAsStateWithLifecycle()
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -52,6 +53,14 @@ fun RegisterScreen(
         signInError?.let { error ->
             coroutineScope.launch {
                 snackbarHostState.showSnackbar(error)
+            }
+        }
+    }
+
+    LaunchedEffect(user) {
+        user?.let {
+            navController.navigate("Login") {
+                popUpTo("Register") { inclusive = true }
             }
         }
     }
@@ -131,14 +140,6 @@ fun RegisterScreen(
             if (isLoading) {
                 Spacer(modifier = Modifier.height(16.dp))
                 CircularProgressIndicator()
-            }
-        }
-    }
-
-    LaunchedEffect(viewModel.user.collectAsStateWithLifecycle().value) {
-        viewModel.user.value?.let {
-            navController.navigate("Login") {
-                popUpTo("Register") { inclusive = true }
             }
         }
     }

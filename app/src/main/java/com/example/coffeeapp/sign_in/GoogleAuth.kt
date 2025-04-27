@@ -15,7 +15,6 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
-import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
@@ -31,7 +30,7 @@ class AuthViewModel : ViewModel() {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val database: FirebaseDatabase = FirebaseDatabase.getInstance()
 
-    private val _user = MutableStateFlow(auth.currentUser)
+    private val _user = MutableStateFlow<FirebaseUser?>(auth.currentUser)
     val user: StateFlow<FirebaseUser?> = _user.asStateFlow()
 
     private val _signInError = MutableStateFlow<String?>(null)
@@ -134,7 +133,7 @@ class AuthViewModel : ViewModel() {
     private fun processSignInResult(result: GetCredentialResponse) {
         when (val credential = result.credential) {
             is CustomCredential -> {
-                if (credential.type == TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
+                if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
                     try {
                         val googleIdTokenCredential =
                             GoogleIdTokenCredential.createFrom(credential.data)
@@ -184,5 +183,4 @@ class AuthViewModel : ViewModel() {
             }
         }
     }
-
 }
