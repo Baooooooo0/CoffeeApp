@@ -45,6 +45,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.coffeeapp.R
+import com.example.coffeeapp.model.CartItem
 import com.example.coffeeapp.model.DrinkData
 import com.example.coffeeapp.viewmodel.CartViewModel
 import com.google.firebase.database.DataSnapshot

@@ -1,4 +1,4 @@
-package com.example.coffeeapp.ui.screens
+package com.example.coffeeapp.model
 
 data class CartItem(
     val name: String,

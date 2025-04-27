@@ -5,12 +5,21 @@ import android.content.SharedPreferences
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.example.coffeeapp.ui.screens.CartItem
+import com.example.coffeeapp.model.CartItem
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class CartViewModel : ViewModel() {
     var cartItems = mutableStateListOf<CartItem>()
+        private set
+
+    var purchaseHistory = mutableStateListOf<List<CartItem>>() // lịch sử các đơn hàng
+        private set
+
+    var purchaseTimestamps = mutableStateListOf<String>() //thgian mua hang
         private set
 
     private val _totalPrice = mutableStateOf(0.0)
@@ -21,6 +30,7 @@ class CartViewModel : ViewModel() {
     fun init(context: Context) {
         sharedPreferences = context.getSharedPreferences("cart_prefs", Context.MODE_PRIVATE)
         loadCart()
+        loadPurchaseHistory()
     }
 
     fun addToCart(item: CartItem) {
@@ -76,6 +86,16 @@ class CartViewModel : ViewModel() {
     }
 
     fun clearCart() {
+        if (cartItems.isNotEmpty()) {
+            // Lưu đơn hàng hiện tại vào lịch sử
+            val orderCopy = cartItems.map { it.copy() }
+            purchaseHistory.add(orderCopy)
+
+            val timestamp = getCurrentTimestamp()
+            purchaseTimestamps.add(timestamp)
+
+            savePurchaseHistory()
+        }
         cartItems.clear()
         _totalPrice.value = 0.0
         saveCart()
@@ -107,4 +127,43 @@ class CartViewModel : ViewModel() {
             }
         }
     }
+
+    private fun savePurchaseHistory() {
+        if (::sharedPreferences.isInitialized) {
+            val gson = Gson()
+            sharedPreferences.edit().apply {
+                putString("purchase_history", gson.toJson(purchaseHistory))
+                putString("purchase_timestamps", gson.toJson(purchaseTimestamps))
+            }.apply()
+        }
+    }
+
+    private fun loadPurchaseHistory() {
+        if (::sharedPreferences.isInitialized) {
+            val gson = Gson()
+
+            sharedPreferences.getString("purchase_history", null)?.let { json ->
+                val type = object : TypeToken<List<List<CartItem>>>() {}.type
+                val history = gson.fromJson<List<List<CartItem>>>(json, type)
+                purchaseHistory.addAll(history)
+            }
+
+            sharedPreferences.getString("purchase_timestamps", null)?.let { json ->
+                val type = object : TypeToken<List<String>>() {}.type
+                val timestamps = gson.fromJson<List<String>>(json, type)
+                purchaseTimestamps.addAll(timestamps)
+            }
+        }
+    }
+
+    private fun getCurrentTimestamp(): String {
+        val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+        return sdf.format(Date())
+    }
+
+    fun clearPurchaseHistory() {
+        purchaseHistory.clear()
+        purchaseTimestamps.clear()
+    }
 }
+

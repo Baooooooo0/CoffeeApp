@@ -29,7 +29,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -41,6 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.coffeeapp.model.CartItem
 import com.example.coffeeapp.viewmodel.CartViewModel
 import kotlinx.coroutines.launch
 
@@ -128,7 +129,7 @@ fun CartItemRow(
     onDecrease: () -> Unit,
     onDelete: () -> Unit
 ) {
-    var quantity by remember { mutableStateOf(item.quantity) }
+    var quantity by remember { mutableIntStateOf(item.quantity) }
 
     Column(
         modifier = Modifier

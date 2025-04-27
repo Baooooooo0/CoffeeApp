@@ -35,7 +35,7 @@ fun AppNavigation() {
         composable("Menu") { MenuScreen(navController)}
         composable("Favourite") { FavouriteScreen(navController)}
         composable("Cart") { CartScreen(navController, cartViewModel) }
-        composable("History") { HistoryScreen(navController)}
+        composable("History") { HistoryScreen(navController, cartViewModel)}
 
         composable("category_items/{categoryId}") { backStackEntry ->
             val categoryId = backStackEntry.arguments?.getString("categoryId") ?: ""
