@@ -19,6 +19,7 @@ import com.example.coffeeapp.ui.screens.MenuScreen
 import com.example.coffeeapp.ui.screens.ProfileScreen
 import com.example.coffeeapp.ui.screens.SplashScreen
 import com.example.coffeeapp.viewmodel.CartViewModel
+import com.example.coffeeapp.ui.screens.RegisterScreen
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
@@ -26,8 +27,9 @@ fun AppNavigation() {
     val navController = rememberNavController()
     val cartViewModel: CartViewModel = viewModel()
 
-    NavHost(navController = navController, startDestination = "Menu") {
+    NavHost(navController = navController, startDestination = "Login") {
         composable("Login") { LoginScreen(navController) }
+        composable("Register") { RegisterScreen(navController) }
         composable("Profile") { ProfileScreen(navController)}
         composable("Splash") { SplashScreen(navController)}
         composable("Menu") { MenuScreen(navController)}

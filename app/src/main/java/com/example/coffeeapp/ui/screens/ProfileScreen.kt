@@ -2,26 +2,11 @@ package com.example.coffeeapp.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,19 +16,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.coffeeapp.R
+import com.example.coffeeapp.sign_in.AuthViewModel
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
-fun HeaderProfile(navHostController: NavHostController, detail: String){
+fun HeaderProfile(navHostController: NavHostController, detail: String) {
     Column(
         modifier = Modifier.background(Color.White)
     ) {
         Box {
             Button(
-                onClick = {navHostController.popBackStack()},
+                onClick = { navHostController.popBackStack() },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.White,
                     contentColor = Color(0xFF42AFFF)
@@ -51,8 +38,7 @@ fun HeaderProfile(navHostController: NavHostController, detail: String){
                 modifier = Modifier
                     .align(Alignment.TopStart)
                     .padding(top = 40.dp, start = 5.dp, end = 15.dp, bottom = 15.dp)
-            )
-            {
+            ) {
                 Text(
                     text = "<",
                     fontSize = 40.sp
@@ -73,8 +59,10 @@ fun HeaderProfile(navHostController: NavHostController, detail: String){
 }
 
 @Composable
-fun ProfileScreen(navController: NavHostController) {
-
+fun ProfileScreen(
+    navController: NavHostController,
+    viewModel: AuthViewModel = viewModel(factory = AuthViewModel.Factory)
+) {
     val user = FirebaseAuth.getInstance().currentUser
     var userName by remember { mutableStateOf(user?.displayName ?: "") }
     var userEmail = user?.email ?: "No email available"
@@ -91,7 +79,7 @@ fun ProfileScreen(navController: NavHostController) {
 
         Box(
             modifier = Modifier.fillMaxSize()
-        ){
+        ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
@@ -100,7 +88,7 @@ fun ProfileScreen(navController: NavHostController) {
                     .padding(top = 120.dp)
                     .background(color = Color.White)
             ) {
-                Box(modifier = Modifier.fillMaxHeight()){
+                Box(modifier = Modifier.fillMaxHeight()) {
                     if (imageUrl.isNotEmpty()) {
                         AsyncImage(
                             model = imageUrl,
@@ -120,7 +108,7 @@ fun ProfileScreen(navController: NavHostController) {
                     }
                     Image(
                         painter = painterResource(id = R.drawable.camera_image),
-                        contentDescription ="Camera Icon",
+                        contentDescription = "Camera Icon",
                         modifier = Modifier
                             .size(40.dp)
                     )
@@ -160,6 +148,27 @@ fun ProfileScreen(navController: NavHostController) {
                     .padding(horizontal = 32.dp)
             )
             Spacer(modifier = Modifier.height(20.dp))
+
+            // Thêm nút Logout
+            Button(
+                onClick = {
+                    viewModel.signOut()
+                    navController.navigate("Login") {
+                        popUpTo("Profile") { inclusive = true }
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFEF5350),
+                    contentColor = Color.White
+                ),
+                shape = RoundedCornerShape(12.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp)
+                    .height(50.dp)
+            ) {
+                Text(text = "Logout")
+            }
         }
     }
 }
