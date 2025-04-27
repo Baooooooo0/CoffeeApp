@@ -186,7 +186,7 @@ private fun SignInContent(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         ) {
-            Text(text = "Login with Email")
+            Text(text = "LOGIN")
         }
 
         Spacer(modifier = Modifier.height(8.dp))
