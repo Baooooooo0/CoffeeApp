@@ -71,5 +71,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx) // ViewModel
     implementation(libs.kotlinx.coroutines.android) // Coroutines
     implementation(libs.okhttp.logging) // OkHttp Logging Interceptor}
+    implementation("androidx.compose.material:material-icons-extended:1.6.0")
 
 }

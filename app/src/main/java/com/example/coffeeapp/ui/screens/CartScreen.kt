@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -35,13 +36,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.coffeeapp.model.CartItem
 import com.example.coffeeapp.recycle.HeaderScreen
-import com.example.coffeeapp.viewmodel.CartViewModel
+import com.example.coffeeapp.model.CartViewModel
 import kotlinx.coroutines.launch
+
+// Optimized color definitions
+private val BackgroundDark = Color(0xFF0D1117)
+private val SurfaceDark = Color(0xFF161B22)
+private val CardDark = Color(0xFF21262D)
+private val PrimaryGreen = Color(0xFF238636)
+private val PrimaryGreenHover = Color(0xFF2EA043)
+private val DangerRed = Color(0xFFDA3633)
+private val DangerRedHover = Color(0xFFFF6B6B)
+private val TextPrimary = Color(0xFFF0F6FC)
+private val TextSecondary = Color(0xFF8B949E)
+private val TextSuccess = Color(0xFF3FB950)
+private val BorderSubtle = Color(0xFF30363D)
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -58,69 +73,122 @@ fun CartScreen(navController: NavController, cartViewModel: CartViewModel) {
             HeaderScreen(navController = navController, detail = "Shopping Cart")
         },
         bottomBar = {
-            BottomAppBar(
-                containerColor = Color.White,
-                tonalElevation = 8.dp
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+            if (cartItems.isNotEmpty()) {
+                BottomAppBar(
+                    containerColor = SurfaceDark,
+                    tonalElevation = 8.dp
                 ) {
-                    Text(
-                        text = "Total: ${"%,.2f".format(totalPrice)} $",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Black
-                    )
-                    Button(
-                        onClick = {
-                            if (cartItems.isNotEmpty()) {
-                                coroutineScope.launch {
-                                    snackbarHostState.showSnackbar("You've paid successfully!")
-                                }
-                                cartViewModel.clearCart() // Xóa giỏ hàng sau khi thanh toán
-                            }
-                        },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFA500))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text("Pay Now")
+                        Column {
+                            Text(
+                                text = "Total",
+                                fontSize = 12.sp,
+                                color = TextSecondary,
+                                fontWeight = FontWeight.Medium
+                            )
+                            Text(
+                                text = "${"%,.0f".format(totalPrice)} $",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = TextPrimary
+                            )
+                        }
+                        Button(
+                            onClick = {
+                                coroutineScope.launch {
+                                    snackbarHostState.showSnackbar("Payment successful!")
+                                }
+                                cartViewModel.clearCart()
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = PrimaryGreen
+                            ),
+                            shape = RoundedCornerShape(12.dp),
+                            modifier = Modifier
+                                .height(48.dp)
+                                .width(120.dp)
+                        ) {
+                            Text(
+                                "Purchase",
+                                color = Color.White,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 14.sp
+                            )
+                        }
                     }
                 }
             }
         },
-        containerColor = Color(0xFFF5F5F5)
+        containerColor = BackgroundDark
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .padding(16.dp)
-                .fillMaxSize()
-        ) {
+        if (cartItems.isEmpty()) {
+            EmptyCartState(modifier = Modifier.padding(innerPadding))
+        } else {
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .padding(16.dp)
+                    .fillMaxSize()
+            ) {
+                Text(
+                    text = "Cart (${cartItems.size} ${if (cartItems.size == 1) "item" else "items"})",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = TextPrimary
+                )
+                Spacer(modifier = Modifier.height(20.dp))
 
-            Text(
-                text = "Shopping Cart",
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Dùng LazyColumn để cuộn giỏ hàng
-            LazyColumn {
-                items(cartItems) { item ->
-                    CartItemRow(
-                        item = item,
-                        onIncrease = { cartViewModel.increaseQuantity(item) },
-                        onDecrease = { cartViewModel.decreaseQuantity(item) },
-                        onDelete = { cartViewModel.removeFromCart(item) }
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(cartItems) { item ->
+                        CartItemRow(
+                            item = item,
+                            onIncrease = { cartViewModel.increaseQuantity(item) },
+                            onDecrease = { cartViewModel.decreaseQuantity(item) },
+                            onDelete = { cartViewModel.removeFromCart(item) }
+                        )
+                    }
                 }
             }
         }
+    }
+}
+
+@Composable
+fun EmptyCartState(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Icon(
+            imageVector = Icons.Default.ShoppingCart,
+            contentDescription = null,
+            modifier = Modifier.size(80.dp),
+            tint = TextSecondary
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "Cart is Empty",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            color = TextPrimary
+        )
+        Text(
+            text = "Add products to start shopping",
+            fontSize = 14.sp,
+            color = TextSecondary,
+            textAlign = TextAlign.Center
+        )
     }
 }
 
@@ -134,9 +202,9 @@ fun CartItemRow(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .background(Color.White)
-            .padding(12.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(CardDark)
+            .padding(16.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -148,39 +216,47 @@ fun CartItemRow(
                 Text(
                     text = item.name,
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
+                    fontWeight = FontWeight.SemiBold,
+                    color = TextPrimary
                 )
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(6.dp))
                 Text(
-                    text = "${"%,.2f".format(item.price * item.quantity)} $",
+                    text = "${"%,.0f".format(item.price)} $/item",
                     fontSize = 14.sp,
-                    color = Color.Gray
+                    color = TextSecondary
+                )
+                Text(
+                    text = "Total: ${"%,.0f".format(item.price * item.quantity)} $",
+                    fontSize = 14.sp,
+                    color = TextSuccess,
+                    fontWeight = FontWeight.Medium
                 )
             }
 
             Text(
                 text = "x${item.quantity}",
                 fontSize = 16.sp,
-                color = Color.Black,
-                modifier = Modifier.padding(end = 16.dp)
+                color = TextPrimary,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(end = 12.dp)
             )
 
             IconButton(
                 onClick = onDelete,
                 modifier = Modifier
-                    .background(Color.Red, shape = RoundedCornerShape(10.dp))
-                    .size(48.dp)
+                    .background(DangerRed, shape = RoundedCornerShape(12.dp))
+                    .size(44.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Delete,
-                    contentDescription = "Delete",
-                    tint = Color.White
+                    contentDescription = "Delete item",
+                    tint = Color.White,
+                    modifier = Modifier.size(20.dp)
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -190,26 +266,43 @@ fun CartItemRow(
             Button(
                 onClick = { if (item.quantity > 1) onDecrease() },
                 contentPadding = PaddingValues(0.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
-                modifier = Modifier.size(36.dp)
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (item.quantity > 1) SurfaceDark else Color(0xFF1C2128),
+                    disabledContainerColor = Color(0xFF1C2128)
+                ),
+                enabled = item.quantity > 1,
+                shape = RoundedCornerShape(8.dp),
+                modifier = Modifier.size(40.dp)
             ) {
-                Text("-", fontSize = 20.sp, color = Color.Black)
+                Text(
+                    "−",
+                    fontSize = 18.sp,
+                    color = if (item.quantity > 1) TextPrimary else TextSecondary,
+                    fontWeight = FontWeight.Bold
+                )
             }
-            Spacer(modifier = Modifier.width(8.dp))
+
             Text(
                 text = item.quantity.toString(),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = TextPrimary,
+                modifier = Modifier.padding(horizontal = 24.dp)
             )
-            Spacer(modifier = Modifier.width(8.dp))
+
             Button(
                 onClick = onIncrease,
                 contentPadding = PaddingValues(0.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
-                modifier = Modifier.size(36.dp)
+                colors = ButtonDefaults.buttonColors(containerColor = PrimaryGreen),
+                shape = RoundedCornerShape(8.dp),
+                modifier = Modifier.size(40.dp)
             ) {
-                Text("+", fontSize = 20.sp, color = Color.Black)
+                Text(
+                    "+",
+                    fontSize = 18.sp,
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     }

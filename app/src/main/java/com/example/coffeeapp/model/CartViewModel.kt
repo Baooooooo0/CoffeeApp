@@ -1,11 +1,10 @@
-package com.example.coffeeapp.viewmodel
+package com.example.coffeeapp.model
 
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.example.coffeeapp.model.CartItem
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.text.SimpleDateFormat
@@ -16,10 +15,10 @@ class CartViewModel : ViewModel() {
     var cartItems = mutableStateListOf<CartItem>()
         private set
 
-    var purchaseHistory = mutableStateListOf<List<CartItem>>() // lịch sử các đơn hàng
+    var purchaseHistory = mutableStateListOf<List<CartItem>>()
         private set
 
-    var purchaseTimestamps = mutableStateListOf<String>() //thgian mua hang
+    var purchaseTimestamps = mutableStateListOf<String>()
         private set
 
     private val _totalPrice = mutableStateOf(0.0)
@@ -34,20 +33,23 @@ class CartViewModel : ViewModel() {
     }
 
     fun addToCart(item: CartItem) {
-        val existingItem = cartItems.find { it.name == item.name }
-        if (existingItem != null) {
-            updateItemQuantity(existingItem, existingItem.quantity + 1)
+        val existingIndex = cartItems.indexOfFirst { it.name == item.name }
+        if (existingIndex != -1) {
+            // Cập nhật quantity của item đã tồn tại
+            cartItems[existingIndex] = cartItems[existingIndex].copy(
+                quantity = cartItems[existingIndex].quantity + 1
+            )
         } else {
-            cartItems.add(item)
-            recalculateTotal()
-            saveCart()
+            // Thêm item mới
+            cartItems.add(item.copy())
         }
+        recalculateTotal()
+        saveCart()
     }
 
     fun removeFromCart(item: CartItem) {
         val index = cartItems.indexOfFirst {
-            it.name == item.name &&
-                    it.price == item.price
+            it.name == item.name && it.price == item.price
         }
         if (index != -1) {
             cartItems.removeAt(index)
@@ -56,27 +58,36 @@ class CartViewModel : ViewModel() {
         }
     }
 
-
     fun increaseQuantity(item: CartItem) {
-        val index = cartItems.indexOf(item)
+        val index = cartItems.indexOfFirst {
+            it.name == item.name && it.price == item.price
+        }
         if (index != -1) {
-            cartItems[index] = cartItems[index].copy(quantity = cartItems[index].quantity + 1)
+            cartItems[index] = cartItems[index].copy(
+                quantity = cartItems[index].quantity + 1
+            )
             recalculateTotal()
             saveCart()
         }
     }
 
     fun decreaseQuantity(item: CartItem) {
-        val index = cartItems.indexOf(item)
+        val index = cartItems.indexOfFirst {
+            it.name == item.name && it.price == item.price
+        }
         if (index != -1 && cartItems[index].quantity > 1) {
-            cartItems[index] = cartItems[index].copy(quantity = cartItems[index].quantity - 1)
+            cartItems[index] = cartItems[index].copy(
+                quantity = cartItems[index].quantity - 1
+            )
             recalculateTotal()
             saveCart()
         }
     }
 
     fun updateItemQuantity(item: CartItem, newQuantity: Int) {
-        val index = cartItems.indexOf(item)
+        val index = cartItems.indexOfFirst {
+            it.name == item.name && it.price == item.price
+        }
         if (index != -1) {
             cartItems[index] = cartItems[index].copy(quantity = newQuantity)
             recalculateTotal()
@@ -94,7 +105,6 @@ class CartViewModel : ViewModel() {
 
     fun clearCart() {
         if (cartItems.isNotEmpty()) {
-            // Lưu đơn hàng hiện tại vào lịch sử
             val orderCopy = cartItems.map { it.copy() }
             purchaseHistory.add(orderCopy)
 
@@ -110,6 +120,11 @@ class CartViewModel : ViewModel() {
 
     private fun recalculateTotal() {
         _totalPrice.value = cartItems.sumOf { it.price * it.quantity }
+        // Debug log để kiểm tra
+        println("Debug - Recalculating total: ${_totalPrice.value}")
+        cartItems.forEach { item ->
+            println("Debug - Item: ${item.name}, Price: ${item.price}, Quantity: ${item.quantity}, Subtotal: ${item.price * item.quantity}")
+        }
     }
 
     private fun saveCart() {
@@ -173,4 +188,3 @@ class CartViewModel : ViewModel() {
         purchaseTimestamps.clear()
     }
 }
-

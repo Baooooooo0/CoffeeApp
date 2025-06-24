@@ -19,7 +19,7 @@ import com.example.coffeeapp.ui.screens.MenuScreen
 import com.example.coffeeapp.ui.screens.ProfileScreen
 import com.example.coffeeapp.ui.screens.RegisterScreen
 import com.example.coffeeapp.ui.screens.SplashScreen
-import com.example.coffeeapp.viewmodel.CartViewModel
+import com.example.coffeeapp.model.CartViewModel
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable

@@ -45,7 +45,7 @@ fun CategoryPanel(navController: NavController) {
         CategoryItemData("Ice Coffee", R.drawable.ice_coffee,"4"),
         CategoryItemData("Brewing Coffee", R.drawable.brewing_coffee,"5"),
         CategoryItemData("Shake", R.drawable.shake,"6"),
-        CategoryItemData("Restaurant", R.drawable.restaurant,"7"),
+        CategoryItemData("Take Away", R.drawable.restaurant,"7"),
         CategoryItemData("Breakfast", R.drawable.breakfast,"8"),
         CategoryItemData("Cake", R.drawable.cake,"9")
     )

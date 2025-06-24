@@ -52,7 +52,7 @@ fun MenuScreen(navHostController: NavHostController) {
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "SHOP COFFEE\n ${user?.displayName ?: "Welcome!"}",
+                text = "Welcome\n ${user?.displayName}",
                 fontSize = 42.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
@@ -61,9 +61,10 @@ fun MenuScreen(navHostController: NavHostController) {
                     .padding(top = 64.dp)
             )
 
-
             Spacer(modifier = Modifier.weight(1f))
+
             CategoryPanel(navController = navHostController)
+
             Spacer(modifier = Modifier.height(65.dp))
         }
         FooterMenu(navController = navHostController)

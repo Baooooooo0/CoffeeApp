@@ -43,7 +43,7 @@ fun HeaderMenu(categoryId: String, navController: NavController){
             "4" to CategoryItemData("Ice Coffee", R.drawable.ice_coffee, "4"),
             "5" to CategoryItemData("Brewing Coffee", R.drawable.brewing_coffee, "5"),
             "6" to CategoryItemData("Shake", R.drawable.shake, "6"),
-            "7" to CategoryItemData("Restaurant", R.drawable.restaurant, "7"),
+            "7" to CategoryItemData("Take Away", R.drawable.restaurant, "7"),
             "8" to CategoryItemData("Breakfast", R.drawable.breakfast, "8"),
             "9" to CategoryItemData("Cake", R.drawable.cake, "9")
         )
